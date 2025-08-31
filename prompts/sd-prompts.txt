@@ -1,0 +1,1 @@
+houtu,1girl,solo. --negative_prompt bad hands,text --w 512 --h 512 --seed 1337 --l 7 --s 20

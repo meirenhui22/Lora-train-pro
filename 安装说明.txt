@@ -1,0 +1,56 @@
+如果git无法使用，找到vpn的代理端口，并使用这两个命令设置git
+git config --global http.proxy http://127.0.0.1:代理端口
+git config --global https.proxy https://127.0.0.1:代理端口
+
+
+创建并激活虚拟环境
+python -m venv venv
+更新pip：python.exe -m pip install --upgrade pip
+下载flux打标模型：python florence-model.py
+
+根据cuda版本安装cuda和torch
+# CUDA主版本≥12的安装逻辑
+if (( cuda_major_version >= 12 )); then
+    echo "install torch 2.7.0+cu128"
+    pip install torch==2.7.0+cu128 torchvision==0.22.0+cu128 --extra-index-url https://download.pytorch.org/whl/cu128
+    pip install --no-deps xformers==0.0.30 --extra-index-url https://download.pytorch.org/whl/cu128
+
+# CUDA 11.8及以上的安装逻辑
+elif (( cuda_major_version == 11 && cuda_minor_version >= 8 )); then
+    echo "install torch 2.4.0+cu118"
+    pip install torch==2.4.0+cu118 torchvision==0.19.0+cu118 --extra-index-url https://download.pytorch.org/whl/cu118
+    pip install --no-deps xformers==0.0.27.post2+cu118 --extra-index-url https://download.pytorch.org/whl/cu118
+
+# CUDA 11.6及以上的安装逻辑
+elif (( cuda_major_version == 11 && cuda_minor_version >= 6 )); then
+    echo "install torch 1.12.1+cu116"
+    pip install torch==1.12.1+cu116 torchvision==0.13.1+cu116 --extra-index-url https://download.pytorch.org/whl/cu116
+    pip install --upgrade git+https://github.com/facebookresearch/xformers.git@0bad001ddd56c080524d37c84ff58d9cd030ebfd
+    pip install triton==2.0.0.dev20221202
+
+# CUDA 11.2及以上的安装逻辑
+elif (( cuda_major_version == 11 && cuda_minor_version >= 2 )); then
+    echo "install torch 1.12.1+cu113"
+    pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 --extra-index-url https://download.pytorch.org/whl/cu116
+    pip install --upgrade git+https://github.com/facebookresearch/xformers.git@0bad001ddd56c080524d37c84ff58d9cd030ebfd
+    pip install triton==2.0.0.dev20221202
+
+安装requirements.txt
+pip install -r requirements.txt
+pip install -r requirements-db.txt
+
+设置标签编辑器翻译api，打开app.py，修改：
+# 百度翻译API配置 - 请替换为您自己的appid和appkey
+BAIDU_APPID = '你的appid'
+BAIDU_APPKEY = '你的appkey'
+
+测试为图片打标-flux
+python florence-tag.py
+
+为sd-tag打标
+pip install onnx onnxruntime-gpu
+安装https://cmake.org/download/,如果提示需要
+python sd-tag.py
+
+
+
